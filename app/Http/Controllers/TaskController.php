@@ -107,7 +107,7 @@ class TaskController extends Controller
 
         return response()->json([
             'success' => true,
-            'project' => $task
+            'task' => $task
         ]);
     }
 
