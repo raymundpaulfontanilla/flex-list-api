@@ -107,7 +107,7 @@ class TaskController extends Controller
 
         return response()->json([
             'success' => true,
-            'project' => $task
+            'task' => $task
         ]);
     }
 
@@ -124,7 +124,30 @@ class TaskController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $task = Task::find($id);
+
+        if (!$task) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 404,
+                'errorCode' => 'TASK_NOT_FOUND',
+                'message' => 'Task not found',
+                'project' => null
+            ], 404);
+        }
+
+        $task->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'is_completed' => $request->is_completed,
+            'display_order' => $request->display_order
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Task updated',
+            'task' => $task
+        ]);
     }
 
     /**
