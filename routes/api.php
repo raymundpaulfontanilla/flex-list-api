@@ -13,4 +13,5 @@ Route::prefix('tasks')->group(function () {
     Route::get('/', [TaskController::class, 'index']);
     Route::get('/{id}', [TaskController::class, 'show']);
     Route::put('/{id}', [TaskController::class, 'update']);
+    Route::delete('/{id}', [TaskController::class, 'destroy']);
 });
