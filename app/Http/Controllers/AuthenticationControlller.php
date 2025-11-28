@@ -40,4 +40,46 @@ class AuthenticationControlller extends Controller
             ],
         ], 201);
     }
+
+    function login(Request $request)
+    {
+        $user = User::where('username', $request->username)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 404,
+                'errorCode' => 'USERNAME_OR_PASSWORD_INCORRECT',
+                'message' => 'username or password is incorrect',
+                'user' => null
+            ], 404);
+        }
+
+        $salt = $user->salt;
+        $storedHash = $user->password;
+
+        $passwordWithSalt = $request->password . $salt;
+        $hashedInput = hash('sha256', $passwordWithSalt);
+
+        if ($hashedInput == $storedHash) {
+            return response()->json([
+                'success' => true,
+                'statusCode' => 200,
+                'message' => 'Successfully logged in. Welcome ' . $user->name,
+                'user' => ([
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                ]),
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'statusCode' => 404,
+                'errorCode' => 'USERNAME_OR_PASSWORD_INCORRECT',
+                'message' => 'username or password is incorrect',
+                'user' => null
+            ], 404);
+        }
+    }
 }
