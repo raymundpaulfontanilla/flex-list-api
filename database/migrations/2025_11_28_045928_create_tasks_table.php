@@ -19,7 +19,6 @@ return new class extends Migration
             $table->boolean('is_completed')->default(false);
             $table->integer('display_order')->default(0);
             $table->foreignId('user_id')->constrained();
-            $table->foreignId('category_id')->constrained();
             $table->timestamps();
         });
     }
