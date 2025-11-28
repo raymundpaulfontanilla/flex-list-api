@@ -10,4 +10,5 @@ Route::post('/login', [AuthenticationControlller::class, 'login']);
 
 Route::prefix('tasks')->group(function () {
     Route::post('/create-task', [TaskController::class, 'store']);
+    Route::get('/', [TaskController::class, 'index']);
 });

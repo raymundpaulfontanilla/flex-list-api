@@ -2,16 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    protected $table = 'users';
-    protected $primaryKey = 'id';
-    protected $keyType = 'int';
-    public $incrementing = true;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -39,4 +35,9 @@ class User extends Authenticatable
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s';
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
 }

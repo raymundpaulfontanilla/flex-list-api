@@ -11,9 +11,33 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->has('id')) {
+            $task = User::find($request->id);
+
+            if (!$task) {
+                return response()->json([
+                    'success' => false,
+                    'statusCode' => 404,
+                    'errorCode' => 'USER_NOT_FOUND',
+                    'message' => 'Please register first',
+                    'task' => null
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'tasks' => $task
+            ]);
+        }
+
+        $tasks = Task::with('user')->get();
+
+        return response()->json([
+            'success' => true,
+            'task' => $tasks
+        ]);
     }
 
     /**
