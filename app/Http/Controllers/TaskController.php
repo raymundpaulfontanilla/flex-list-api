@@ -66,10 +66,9 @@ class TaskController extends Controller
         }
 
         $task = Task::create([
-            'user_id' => 2,
-            'title' => 'Task 2',
-            'description' => 'Description 2',
-            'is_completed' => false,
+            'user_id' => 1,
+            'title' => 'Task 1',
+            'is_completed' => true,
             'display_order' => 0,
         ]);
 
@@ -81,7 +80,6 @@ class TaskController extends Controller
                 'id' => $task->id,
                 'user_id' => $task->user_id,
                 'title' => $task->title,
-                'description' => $task->description,
                 'is_completed' => $task->is_completed,
                 'display_order' => $task->display_order,
             ]),
@@ -138,7 +136,6 @@ class TaskController extends Controller
 
         $task->update([
             'title' => $request->title,
-            'description' => $request->description,
             'is_completed' => $request->is_completed,
             'display_order' => $request->display_order
         ]);
