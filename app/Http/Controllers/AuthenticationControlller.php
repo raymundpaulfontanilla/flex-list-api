@@ -19,11 +19,14 @@ class AuthenticationControlller extends Controller
         $passwordWithSalt = $userPassword . $temporarySalt;
         $passwordHash = hash('sha256', $passwordWithSalt);
 
+        $api_token = Str::random(60);
+
         $user = User::create([
             'name' => $validated['name'],
             'username' => $validated['username'],
             'password' => $passwordHash,
-            'salt' => $temporarySalt
+            'salt' => $temporarySalt,
+            'api_token' => $api_token,
         ]);
 
         return response()->json([
