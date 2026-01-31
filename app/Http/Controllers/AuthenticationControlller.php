@@ -65,6 +65,11 @@ class AuthenticationControlller extends Controller
         $hashedInput = hash('sha256', $passwordWithSalt);
 
         if ($hashedInput == $storedHash) {
+
+            $token = Str::random(60);
+            $user->api_token = $token;
+            $user->save();
+
             return response()->json([
                 'success' => true,
                 'statusCode' => 200,
