@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthenticationControlller::class, 'register']);
 Route::post('/login', [AuthenticationControlller::class, 'login']);
 
-Route::prefix('tasks')->group(function () {
+Route::middleware('auth.api')->prefix('tasks')->group(function () {
     Route::post('/create-task', [TaskController::class, 'store']);
     Route::get('/', [TaskController::class, 'index']);
     Route::get('/{id}', [TaskController::class, 'show']);
