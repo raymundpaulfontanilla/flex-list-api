@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTaskRequest;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -51,11 +52,13 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store()
+    public function store(StoreTaskRequest $request)
     {
-        $task = User::find(1);
+        $validatedData = $request->validated();
 
-        if (!$task) {
+        $user = User::find(1);
+
+        if (!$user) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 404,
@@ -65,24 +68,15 @@ class TaskController extends Controller
             ], 404);
         }
 
-        $task = Task::create([
-            'user_id' => 1,
-            'title' => 'Task 1',
-            'is_completed' => true,
-            'display_order' => 0,
-        ]);
+        $task = Task::create(array_merge($validatedData, [
+            'user_id' => $user->id
+        ]));
 
         return response()->json([
             'success' => true,
             'statusCode' => 200,
             'message' => 'Task Created',
-            'task' => ([
-                'id' => $task->id,
-                'user_id' => $task->user_id,
-                'title' => $task->title,
-                'is_completed' => $task->is_completed,
-                'display_order' => $task->display_order,
-            ]),
+            'task' => $task
         ], 200);
     }
 
