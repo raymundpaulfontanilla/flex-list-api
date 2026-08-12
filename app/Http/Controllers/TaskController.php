@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -114,8 +115,10 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateTaskRequest $request, string $id)
     {
+        $validatedData = $request->validated();
+
         $task = Task::find($id);
 
         if (!$task) {
@@ -128,11 +131,7 @@ class TaskController extends Controller
             ], 404);
         }
 
-        $task->update([
-            'title' => $request->title,
-            'is_completed' => $request->is_completed,
-            'display_order' => $request->display_order
-        ]);
+        $task->update($validatedData);
 
         return response()->json([
             'success' => true,
