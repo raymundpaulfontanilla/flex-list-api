@@ -52,11 +52,13 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store()
+    public function store(StoreTaskRequest $request)
     {
-        $task = User::find(1);
+        $validatedData = $request->validated();
 
-        if (!$task) {
+        $user = User::find(1);
+
+        if (!$user) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 404,
