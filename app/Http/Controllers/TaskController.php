@@ -36,7 +36,7 @@ class TaskController extends Controller
             ]);
         }
 
-        $tasks = Task::with('user')->get();
+        $tasks = Task::where('user_id', $user->id)->get();
 
         return response()->json([
             'success' => true,
