@@ -53,16 +53,16 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        $task = Task::find($id);
+        $task = Task::ownedBy($request->user()->id)->find($id);
 
         if (!$task) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 404,
                 'errorCode' => 'TASK_NOT_FOUND',
-                'message' => 'Task not found',
+                'message' => 'Task not found or access denied',
                 'task' => null
             ], 404);
         }
@@ -72,6 +72,7 @@ class TaskController extends Controller
             'task' => $task
         ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -84,13 +85,14 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(UpdateTaskRequest $request, string $id)
     {
         $validatedData = $request->validated();
 
-        $task = Task::where('id', $id)
-            ->where('user_id', $request->user()->id)
-            ->first();
+        $task = Task::ownedBy($request->user()->id)->find($id);
 
         if (!$task) {
             return response()->json([
@@ -116,17 +118,15 @@ class TaskController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        $task = Task::where('id', $id)
-            ->where('user_id', $request->user()->id)
-            ->first();
+        $task = Task::ownedBy($request->user()->id)->find($id);
 
         if (!$task) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 404,
                 'errorCode' => 'TASK_NOT_FOUND',
-                'message' => 'Task not found',
-                'project' => null
+                'message' => 'Task not found or access denied',
+                'task' => null
             ], 404);
         }
 
