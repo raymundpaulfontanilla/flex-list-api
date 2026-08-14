@@ -15,28 +15,7 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
-
-        if ($request->has('id')) {
-            $task = User::find($request->id);
-
-            if (!$task) {
-                return response()->json([
-                    'success' => false,
-                    'statusCode' => 404,
-                    'errorCode' => 'USER_NOT_FOUND',
-                    'message' => 'Please register first',
-                    'task' => null
-                ], 404);
-            }
-
-            return response()->json([
-                'success' => true,
-                'tasks' => $task
-            ]);
-        }
-
-        $tasks = Task::where('user_id', $user->id)->get();
+        $tasks = Task::ownedBy($request->user()->id)->get();
 
         return response()->json([
             'success' => true,
@@ -59,20 +38,8 @@ class TaskController extends Controller
     {
         $validatedData = $request->validated();
 
-        $user = $request->user();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 404,
-                'errorCode' => 'USER_NOT_FOUND',
-                'message' => 'Please register first',
-                'task' => null
-            ], 404);
-        }
-
         $task = Task::create(array_merge($validatedData, [
-            'user_id' => $user->id
+            'user_id' => $request->user()->id
         ]));
 
         return response()->json([
@@ -86,16 +53,16 @@ class TaskController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        $task = Task::find($id);
+        $task = Task::ownedBy($request->user()->id)->find($id);
 
         if (!$task) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 404,
                 'errorCode' => 'TASK_NOT_FOUND',
-                'message' => 'Task not found',
+                'message' => 'Task not found or access denied',
                 'task' => null
             ], 404);
         }
@@ -105,6 +72,7 @@ class TaskController extends Controller
             'task' => $task
         ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -117,19 +85,22 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(UpdateTaskRequest $request, string $id)
     {
         $validatedData = $request->validated();
 
-        $task = Task::find($id);
+        $task = Task::ownedBy($request->user()->id)->find($id);
 
         if (!$task) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 404,
                 'errorCode' => 'TASK_NOT_FOUND',
-                'message' => 'Task not found',
-                'project' => null
+                'message' => 'Task not found or access denied',
+                'task' => null
             ], 404);
         }
 
@@ -145,17 +116,17 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        $task = Task::find($id);
+        $task = Task::ownedBy($request->user()->id)->find($id);
 
         if (!$task) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 404,
                 'errorCode' => 'TASK_NOT_FOUND',
-                'message' => 'Task not found',
-                'project' => null
+                'message' => 'Task not found or access denied',
+                'task' => null
             ], 404);
         }
 

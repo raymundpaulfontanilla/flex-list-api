@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class Task extends Model
 {
@@ -13,6 +14,11 @@ class Task extends Model
         'is_completed',
         'display_order'
     ];
+
+    public function scopeOwnedBy(Builder $query, int $userId): Builder
+    {
+        return $query->where('user_id', $userId);
+    }
 
     public function user(): BelongsTo
     {
