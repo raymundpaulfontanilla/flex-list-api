@@ -121,15 +121,17 @@ class TaskController extends Controller
     {
         $validatedData = $request->validated();
 
-        $task = Task::find($id);
+        $task = Task::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
 
         if (!$task) {
             return response()->json([
                 'success' => false,
                 'statusCode' => 404,
                 'errorCode' => 'TASK_NOT_FOUND',
-                'message' => 'Task not found',
-                'project' => null
+                'message' => 'Task not found or access denied',
+                'task' => null
             ], 404);
         }
 
@@ -145,9 +147,11 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        $task = Task::find($id);
+        $task = Task::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
 
         if (!$task) {
             return response()->json([
