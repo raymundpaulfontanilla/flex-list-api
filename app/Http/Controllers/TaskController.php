@@ -38,20 +38,8 @@ class TaskController extends Controller
     {
         $validatedData = $request->validated();
 
-        $user = $request->user();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'statusCode' => 404,
-                'errorCode' => 'USER_NOT_FOUND',
-                'message' => 'Please register first',
-                'task' => null
-            ], 404);
-        }
-
         $task = Task::create(array_merge($validatedData, [
-            'user_id' => $user->id
+            'user_id' => $request->user()->id
         ]));
 
         return response()->json([
