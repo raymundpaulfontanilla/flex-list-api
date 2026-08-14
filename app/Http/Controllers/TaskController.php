@@ -15,6 +15,8 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
+        $user = $request->user();
+
         if ($request->has('id')) {
             $task = User::find($request->id);
 
@@ -57,7 +59,7 @@ class TaskController extends Controller
     {
         $validatedData = $request->validated();
 
-        $user = User::find(1);
+        $user = $request->user();
 
         if (!$user) {
             return response()->json([
